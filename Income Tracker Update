@@ -1,9 +1,13 @@
 #include <iostream>
 #include<string>
+#include<stdlib.h>
 
 using namespace std;
+
 struct Date;
 struct Expense;
+
+
 bool strcomp(string s1, string s2);
 void prepTracker();
 void mainMenu();
@@ -11,6 +15,7 @@ void manageExpenses();
 void listExpenses();
 void promptAddExpense();
 void addExpense(string name, float price, Date date);
+bool checkDate(int day, int month, int year);
 void promptRemoveExpense();
 int locateExpense(string name);
 void removeExpense(int index);
@@ -38,7 +43,7 @@ struct Date
     {
         day = d;
         month = m;
-        year = m;
+        year = y;
     }
 };
 struct Expense {
@@ -62,7 +67,7 @@ struct Expense {
         Wallet -= price;
     }
     void print() {
-        cout << "Name: " + name + "\nPrice: " << price <<"\nDate: " << date.day << " / " << date.month << " / " << date.year << endl << "------------------------------" << endl;
+        cout << "Name: " << name << "\nPrice: " << price <<"\nDate: " << date.day << " / " << date.month << " / " << date.year << endl << "------------------------------" << endl;
     }
 };
 
@@ -85,7 +90,7 @@ Expense expenses[5000]; int num_of_expenses = 0;
 Expense recurring_costs[100]; int num_of_costs = 0;
 
 void prepTracker() {
-    addExpense("School", 42069,Date(9,3,3));
+    addExpense("School", 42069,Date(9,11,2003));
     addExpense("Laptop", 4200, Date(9, 3, 3));
     addRC("car fuel", 420, Date(9, 3, 3));
     addRC("hosue rent", 69420, Date(9, 3, 3));
@@ -158,6 +163,7 @@ void manageExpenses() {
 
         }
     } while (keepgoing);
+    system("CLS");
 }
 
 void listExpenses() {
@@ -207,18 +213,35 @@ void promptAddExpense() {
         int day;
         int month;
         int year;
+        
         cout << "Enter expense name: ";
+        m:
         cin >> name;
+
+        if (checkIfExists(name))
+        {
+            cout << "An expense with the same name alraedy exists, please enter another name "<<endl; goto m;
+        }
         cout << "Enter expense value: ";
         cin >> price;
         cout << "Enter the Date: ";
+        n:
         cin >> day >> month >> year;
+        if ((checkDate(day, month, year)))
+        {
+            addExpense(name, price, Date(day, month, year));
+        }
+        else
+        {
+            cout << "Please Enter a valid date: "; goto n;
+        }
 
-        addExpense(name, price, Date(day,month,year));
+        
         cout << endl << "Expense added successfully" << endl <<
             "do you want to add another expense? ";
         cin >> yn;
     } while (yn == 'y' || yn == 'Y');
+    system("CLS");
 }
 
 int locateExpense(string name)
@@ -358,13 +381,28 @@ bool checkIfExists(string expenseName)
         }
     }
     return exists;
+  
+}
+bool checkDate(int day, int month, int year)
+{
+    bool correct_date = true;
+
+        if (day < 1 || day > 31)
+            correct_date = false;
+        if (month < 1 || month > 12)
+            correct_date = false;
+        if (year < 1950 || year > 2022)
+            correct_date = false;
+
+        return correct_date;
 }
 
 int main() {
     cout.setf(ios::fixed);
     cout.setf(ios::showpoint);
     cout.precision(2);
-    //fadi has worked on this project 3alashan ma7adesh y2oo l7aga 8eor kda
+    //fadi has worked on this project 3alashan ma7adesh y2ool 7aga 8eor kda
+    // 7sl w ana 4ahd
     prepTracker();
     mainMenu();
     // expenses[0] = Expense("gas", 420);
