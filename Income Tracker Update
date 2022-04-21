@@ -1,0 +1,375 @@
+#include <iostream>
+#include<string>
+
+using namespace std;
+struct Date;
+struct Expense;
+bool strcomp(string s1, string s2);
+void prepTracker();
+void mainMenu();
+void manageExpenses();
+void listExpenses();
+void promptAddExpense();
+void addExpense(string name, float price, Date date);
+void promptRemoveExpense();
+int locateExpense(string name);
+void removeExpense(int index);
+
+void promptEditExpense();
+void editExpense(int index, int option);
+bool checkIfExists(string itemName);
+void manageRC(); //Manage repeated costs
+void listRecurringCosts();
+void promptAddRC();
+void addRC(string name, float price, Date date);
+void promptRemoveRC();
+void promptEditRC();
+void editRC();
+void manageIS();
+
+double Wallet = 0;
+struct Date
+{
+    int day;
+    int month;
+    int year;
+
+    Date(int d=0, int m=0, int y=0)
+    {
+        day = d;
+        month = m;
+        year = m;
+    }
+};
+struct Expense {
+    string name;
+    float price;
+    Date date;
+
+    Expense() {
+        name = "";
+        price = 0;
+        date = Date(0, 0, 0);
+    }
+
+    Expense(string n, float p, Date d) { //Constructor function
+        name = n;
+        price = p;
+        date = d;
+        applyCharges();
+    }
+    void applyCharges() {
+        Wallet -= price;
+    }
+    void print() {
+        cout << "Name: " + name + "\nPrice: " << price <<"\nDate: " << date.day << " / " << date.month << " / " << date.year << endl << "------------------------------" << endl;
+    }
+};
+
+struct IncomeSource {
+    string name; float size;
+    float rate; //Number of days between recieving money
+
+    IncomeSource(string n = "", float val = 0, float r = 0) {
+        name = n;
+        size = val;
+        rate = r;
+    }
+
+    void print() {
+        cout << "Income Source: " + name + "\nProvides " << size << " every " << rate << " days" << endl;
+    }
+};
+
+Expense expenses[5000]; int num_of_expenses = 0;
+Expense recurring_costs[100]; int num_of_costs = 0;
+
+void prepTracker() {
+    addExpense("School", 42069,Date(9,3,3));
+    addExpense("Laptop", 4200, Date(9, 3, 3));
+    addRC("car fuel", 420, Date(9, 3, 3));
+    addRC("hosue rent", 69420, Date(9, 3, 3));
+    addRC("water", 100, Date(9, 3, 3));
+    addRC("electricity", 220, Date(9, 3, 3));
+    addRC("pet food", 200, Date(9, 3, 3));
+}
+
+void addExpense(string name, float price, Date date) { //Addsd an expense to the expenses array
+    expenses[num_of_expenses++] = Expense(name, price, date);
+}
+
+void addRC(string name, float price, Date date) { //Adds a repeating cost to the repeating_costs array
+    recurring_costs[num_of_costs++] = Expense(name, price, date);
+}
+
+void mainMenu() {
+    cout << "Welcome to your income tracker" << endl;
+
+    while (true) {
+        cout << "Select an option: " << endl <<
+            "1. Manage expenses" << endl <<
+            "2. Manage recurring costs" << endl <<
+            "3. Manage income sources" << endl <<
+            "4. View details" << endl <<
+            "5. Exit" << endl;
+    m:
+        int choice;
+        cin >> choice;
+        switch (choice) {
+        case 1:
+            manageExpenses();
+            break;
+        case 2:
+            //manageRC(); 
+            break;
+        case 3:
+            // manageIncome(); 
+            break;
+        case 4:
+            // details(); 
+            break;
+        case 5:
+            exit(1);
+        default:
+            cout << "Please enter a valid choice" << endl; goto m;
+        }
+    }
+}
+
+void manageExpenses() {
+    bool keepgoing = true;
+    do {
+        cout << "Select an option: " << endl <<
+            "\t1.View all expenses" << endl <<
+            "\t2.Edit An Expense" << endl <<
+            "\t3.Go Back" << endl;
+        int option;
+    m:
+        cin >> option;
+        switch (option) {
+        case 1:
+            listExpenses(); break;
+        case 2:
+            promptEditExpense(); break;
+        case 3:
+            keepgoing = false; break;
+        default:
+            cout << "Please enter a valid choice\n"; goto m;
+
+        }
+    } while (keepgoing);
+}
+
+void listExpenses() {
+    int choice;
+    if (!num_of_expenses)
+    { 
+        char AE;
+        cout << "There are currently no expenses, would you like to add an expense ? (y/n)\n";
+        cin >> AE;
+        if (AE == 'y' || AE == 'Y')
+            promptAddExpense();
+        else if (AE == 'N' || AE == 'n')
+        {
+            manageExpenses();
+        }
+    }
+
+    for (int i = 0; i < num_of_expenses; i++) {
+         expenses[i].print();
+    }
+    cout << "Select an option: "
+        << "\n1- Add Expenses\n"
+        << "2- Remove Expenses\n"
+        << "3- Go back" << endl;
+
+m:
+    cin >> choice;
+
+    switch (choice)
+    {
+    case 1:
+        promptAddExpense(); break;
+    case 2:
+        promptRemoveExpense(); break;
+    case 3:
+        manageExpenses(); break;
+    default:
+        cout << "Please enter a valid choice:"; goto m;
+
+    }
+    system("pause");
+}
+
+void promptAddExpense() {
+    string name; float price; char yn;
+    do {
+        int day;
+        int month;
+        int year;
+        cout << "Enter expense name: ";
+        cin >> name;
+        cout << "Enter expense value: ";
+        cin >> price;
+        cout << "Enter the Date: ";
+        cin >> day >> month >> year;
+
+        addExpense(name, price, Date(day,month,year));
+        cout << endl << "Expense added successfully" << endl <<
+            "do you want to add another expense? ";
+        cin >> yn;
+    } while (yn == 'y' || yn == 'Y');
+}
+
+int locateExpense(string name)
+{
+    int index = -1;
+    for (int i = 0; i < num_of_expenses; i++)
+    {
+        if (expenses[i].name == name)
+            index = i;
+    }
+    return index;
+}
+
+
+
+void removeExpense(int index)
+{
+    for (int i = index; i < num_of_expenses; i++)
+    {
+        expenses[i] = expenses[i + 1];
+    }
+    expenses[--num_of_expenses] = Expense();
+}
+
+void promptRemoveExpense()
+{
+    string expenseName;
+    cout << "Enter the name of the expense you want to remove: ";
+    cin >> expenseName;
+    int index = locateExpense(expenseName);
+    if (index > -1)
+    {
+        removeExpense(index);
+    }
+    else
+    {
+        cout << "Expense not found\n";
+    }
+}
+
+void promptEditExpense()
+{
+    string choice;
+    int option;
+    cout << "Enter the name of the expense that you want to change: ";
+m:
+    cin >> choice;
+    if (checkIfExists(choice))
+    {
+        int index = locateExpense(choice);
+        cout << "1- Change Name\n"
+            << "2- Change Value\n"
+            << "3- Change Date\n"
+            << "4- Change All\n";
+        cin >> option;
+        editExpense(index, option);
+    }
+    else
+    {
+        cout << "Please enter a valid name" << endl;    goto m;
+    }
+
+
+}
+void editExpense(int index, int option)
+{
+    string name;
+    float price;
+    int day, month, year;
+    Date date;
+    m:
+    switch (option)
+    {
+    case 1:
+        cout << "Please enter the new name: ";
+        cin >> name;
+        expenses[index].name = name; break;
+    case 2:
+        cout << "Please enter the new price: ";
+        cin >> price;
+        expenses[index].price = price; break;
+    case 3: 
+        cout << "Please Enter the new date";
+        cin >> day >> month >> year;
+        expenses[index].date = Date(day, month, year); break;
+    case 4:
+        cout << "Please enter the new Name: ";
+        cin >> name;
+        expenses[index].name = name;
+        cout << "Please enter the new Price: ";
+        cin >> price;
+        expenses[index].price = price;
+        cout << "Please Enter the new date";
+        cin >> day >> month >> year;
+        expenses[index].date = Date(day, month, year); break;
+    default:
+        cout << "Please enter a valid option: ";
+        cin >> option; goto m;
+
+
+    }
+   
+}
+bool strcomp(string s1, string s2)
+{
+    bool same = true;
+
+    if (s1.length() == s2.length())
+    {
+        for (int i = 0; i < s1.length(); i++)
+        {
+            if (s1[i] != s2[i])
+                same = false;
+        }
+    }
+
+    else if (s1.length() != s2.length())
+        same = false;
+
+    return same;
+}
+bool checkIfExists(string expenseName)
+{
+    bool exists = true;
+    for (int i = 0; i < num_of_expenses; i++)
+    {
+
+        if (strcomp(expenseName, expenses[i].name))
+        {
+            exists = true;
+            break;
+        }
+
+        else
+        {
+            exists = false;
+        }
+    }
+    return exists;
+}
+
+int main() {
+    cout.setf(ios::fixed);
+    cout.setf(ios::showpoint);
+    cout.precision(2);
+    //fadi has worked on this project 3alashan ma7adesh y2oo l7aga 8eor kda
+    prepTracker();
+    mainMenu();
+    // expenses[0] = Expense("gas", 420);
+    // cout << Wallet << endl;
+    // expenses[0].applyCharges();
+    // cout << Wallet;
+
+}
