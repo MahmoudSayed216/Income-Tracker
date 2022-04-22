@@ -1,6 +1,6 @@
 #include <iostream>
 #include<string>
-#include<stdlib.h>
+#include<stdlib.h> // to clear the terminal with system("CLS"); statement 
 #include<fstream>
 #include<iomanip> // will use it later to organize the date format
 
