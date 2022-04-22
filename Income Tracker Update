@@ -11,7 +11,6 @@ struct Expense;
 
 
 void save(int index);
-void load();
 bool strcomp(string s1, string s2);
 //void prepTracker();
 void mainMenu();
@@ -435,7 +434,7 @@ fstream file2("Data.txt", ios::in);
 
 int main()
 {
-    INITload();
+
     cout.setf(ios::fixed);
     cout.setf(ios::showpoint);
     cout.precision(2);
