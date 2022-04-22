@@ -431,22 +431,10 @@ void save()
         INITsave(expenses[i]);
 }
 fstream file2("Data.txt", ios::in);
-void INITload()
-{
-    Expense temp;
-    string num = "0";
-    int x = stoi(num);
-    cout << x;
-    while (file2.good())
-        file2 >> temp.name >> temp.price >> temp.date.day >> temp.date.month >> temp.date.year;
-
-    expenses[0] = temp;
-
-}
 
 int main()
 {
-    INITload();
+   
     cout.setf(ios::fixed);
     cout.setf(ios::showpoint);
     cout.precision(2);
