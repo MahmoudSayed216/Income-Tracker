@@ -11,7 +11,7 @@ struct Expense;
 
 
 void save(int index);
-void load();
+
 bool strcomp(string s1, string s2);
 //void prepTracker();
 void mainMenu();
@@ -38,8 +38,25 @@ void promptRemoveRC();
 void promptEditRC();
 void editRC();
 void manageIS();
+// part 2
+void manageIncome();
+void listIncome();
+void promptAddIncome();
+void addIncome(string name, float size, float rate);
+void editIncomeName(int index);
+void editIncomeSize(int index);
+void editIncomeRate(int index);
+void promptRemoveIncome();
+void removeIncome(int index);
+void promptEditIncome();
+void editincome(int index, int option);
+bool strcompIncome(string s1, string s2);
 
-double Wallet = 0;
+bool checkIfIncomeExists(string itemName);
+int locateIncome(string name);
+
+
+float Wallet = 0;
 struct Date
 {
     int day;
@@ -95,6 +112,7 @@ struct IncomeSource {
 
 Expense expenses[5000]; int num_of_expenses = 0;
 Expense recurring_costs[100]; int num_of_costs = 0;
+IncomeSource incomes[5000]; int num_of_incomes = 0;
 
 /*void prepTracker() {
     addExpense("School", 42069,Date(9,11,2003));
@@ -115,7 +133,8 @@ void addRC(string name, float price, Date date) { //Adds a repeating cost to the
 }
 
 void mainMenu() {
-
+    
+    system("cls");
     cout << "Welcome to your income tracker" << endl;
 
     while (true) {
@@ -136,7 +155,7 @@ void mainMenu() {
             //manageRC(); 
             break;
         case 3:
-            // manageIncome(); 
+             manageIncome(); 
             break;
         case 4:
             // details(); 
@@ -150,8 +169,7 @@ void mainMenu() {
 }
 
 void manageExpenses() {
-    bool keepgoing = true;
-    do {
+
         cout << "Select an option: " << endl <<
             "\t1.View all expenses" << endl <<
             "\t2.Edit An Expense" << endl <<
@@ -165,12 +183,12 @@ void manageExpenses() {
         case 2:
             promptEditExpense(); break;
         case 3:
-            keepgoing = false; break;
+            mainMenu();
         default:
             cout << "Please enter a valid choice\n"; goto m;
 
         }
-    } while (keepgoing);
+  
     system("CLS");
 }
 
@@ -430,11 +448,219 @@ void save()
     for (int i = 0; i < num_of_expenses; i++)
         INITsave(expenses[i]);
 }
-fstream file2("Data.txt", ios::in);
+// part 2 definition
+void addIncome(string name, float size, float rate)
+{
+    incomes[num_of_incomes++] = IncomeSource(name, size, rate);
+}
+
+void manageIncome()
+{
+
+        system("cls");
+
+        cout << "Select an option: " << endl <<
+            "\t1. Add an income" << endl <<
+            "\t2. Remove an income" << endl <<
+            "\t3. Edit an income" << endl <<
+            "\t4.show all current incomes" << endl << endl;
+        cout << "\t5. Go back" << endl << endl;
+
+        int option;
+    m:
+        cin >> option;
+        switch (option)
+        {
+        case 1:
+            //promptAddIncome();
+            break;
+        case 2:
+            //promptRemoveIncome();
+            break;
+        case 3:
+            promptEditIncome();
+            break;
+        case 4:
+            listIncome();
+        case 5:
+            mainMenu();
+            break;
+        default:
+            cout << "Please enter a valid choice\n";
+            goto m;
+        }
+  
+}
+
+void listIncome()
+{
+    //int choice; i have to release it later
+    if (!num_of_incomes)
+    {
+        char YN;
+        cout << "There are currently no income sources, would you like to add an income source ? (y/n)\n";
+        cin >> YN;
+        if (YN == 'y' || YN == 'Y')
+            promptAddIncome();
+        else if (YN == 'n' || YN == 'N')
+        {
+            return;
+        }
+    }
+    for (int i = 0; i < num_of_incomes; i++)
+        incomes[i].print();
+}
+
+
+bool checkIfIncomeExists(string itemName)
+{
+    bool income_exists = true;
+    if (locateIncome(itemName) == -1) {
+
+
+        income_exists = false;
+    }
+
+    return income_exists;
+}
+
+int locateIncome(string name)
+{
+    int index = -1;
+
+    for (int i = 0; i < num_of_incomes; i++)
+    {
+        if (strcomp(incomes[i].name, name))
+        {
+            for (int i = 0; i < num_of_incomes; i++)
+            {
+                if (incomes[i].name == name)
+                    index = i; break;
+            }
+
+            break;
+        }
+
+
+    }
+    return index;
+
+}
+void promptAddIncome()
+{}
+void promptEditIncome() {
+
+    string incomename;
+    int option;
+    if (!num_of_incomes)
+    {
+        char YN;
+        cout << "There are currently no income sources, would you like to add an income source ? (y/n)\n";
+        cin >> YN;
+        if (YN == 'y' || YN == 'Y')
+            promptAddIncome();
+    }
+    else
+        cout << "enter the income source name you would like to edit :";
+    //check the edit income functions
+m:
+    cin >> incomename;
+    if (checkIfIncomeExists(incomename))
+    {
+        int index = locateIncome(incomename);
+        cout << "1- Change Name\n"
+            << "2- Change  Interest Value\n"
+            << "3- Change Date\n"
+            << "4- Change All\n";
+        cin >> option;
+        editincome(index, option);
+    }
+    else
+    {
+        cout << "Please enter a valid name" << endl;    goto m;
+    }
+}
+int locateincome(string name)
+{
+    int index = -1;
+    for (int i = 0; i < num_of_incomes; i++)
+    {
+        if (incomes[i].name == name)
+            index = i;
+    }
+    return index;
+}
+void editincome(int index, int option)
+{
+
+m:
+    switch (option)
+    {
+    case 1:
+        editIncomeName(index); break;
+    case 2:
+        editIncomeSize(index);  break;
+    case 3:
+        editIncomeRate(index); break;
+    case 4:
+        editIncomeName(index); editIncomeSize(index); editIncomeRate(index); break;
+
+    default:
+        cout << "Please enter a valid option: ";
+        cin >> option; goto m;
+
+
+    }
+
+}
+bool strcompIncome(string s1, string s2) //maybe we will use it later
+{
+    bool same = true;
+
+    if (s1.length() == s2.length())
+    {
+        for (int i = 0; i < s1.length(); i++)
+        {
+            if (s1[i] != s2[i])
+                same = false;
+        }
+    }
+
+    else if (s1.length() != s2.length())
+        same = false;
+
+    return same;
+}
+
+
+void editIncomeName(int index)
+{
+    string name;
+    cout << "Please enter the new name: ";
+    cin >> name;
+    incomes[index].name = name;
+}
+void editIncomeSize(int index)
+{
+    float size;
+    cout << "Please enter the new interest: ";
+    cin >> size;
+    incomes[index].size = size;
+}
+void editIncomeRate(int index)
+{
+    float rate;
+    cout << "Please Enter the new rate: ";
+    cin >> rate;
+    incomes[index].rate = rate;
+
+}
+
+
 
 int main()
 {
-   
+
     cout.setf(ios::fixed);
     cout.setf(ios::showpoint);
     cout.precision(2);
