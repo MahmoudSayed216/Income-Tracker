@@ -456,9 +456,9 @@ void addIncome(string name, float size, float rate)
 
 void manageIncome()
 {
-
-        system("cls");
-
+        //added on 5/6/2022
+        system("CLS");
+        //this one above the comment
         cout << "Select an option: " << endl <<
             "\t1. Add an income" << endl <<
             "\t2. Remove an income" << endl <<
@@ -472,7 +472,7 @@ void manageIncome()
         switch (option)
         {
         case 1:
-            //promptAddIncome();
+            promptAddIncome();
             break;
         case 2:
             //promptRemoveIncome();
@@ -482,6 +482,7 @@ void manageIncome()
             break;
         case 4:
             listIncome();
+            break;
         case 5:
             mainMenu();
             break;
@@ -494,7 +495,8 @@ void manageIncome()
 
 void listIncome()
 {
-    //int choice; i have to release it later
+    system("CLS");
+    int choice;
     if (!num_of_incomes)
     {
         char YN;
@@ -509,6 +511,14 @@ void listIncome()
     }
     for (int i = 0; i < num_of_incomes; i++)
         incomes[i].print();
+    cout << endl;
+    cout << "select an option"<<endl;
+    cout << "1- Go back"<<endl;
+    cin >> choice;
+    if (choice)
+    {
+        manageIncome();
+    }
 }
 
 
@@ -547,9 +557,35 @@ int locateIncome(string name)
 
 }
 void promptAddIncome()
-{}
-void promptEditIncome() {
+{
+    
+    string income_name;
+    float  income_value;
+    float  income_rate;
+    char   adding_choice;
 
+    do {
+        cout << "Enter income name: ";
+    m:
+        cin >> income_name;
+        if (checkIfIncomeExists(income_name))
+        {
+            cout << "An income with the same name alraedy exists, please enter another name " << endl; goto m;
+        }
+        cout << "Enter income value: ";
+        cin >> income_value;
+        cout << "Enter the time interval of recieving this income: ";
+        cin >> income_rate;
+        addIncome(income_name, income_value, income_rate);
+
+        cout << "Do you want to add any other incomes? (y/n)";
+        cin >> adding_choice;
+
+    } while (adding_choice == 'y' || adding_choice == 'Y');
+    system("CLS");
+
+}
+void promptEditIncome() {
     string incomename;
     int option;
     if (!num_of_incomes)
