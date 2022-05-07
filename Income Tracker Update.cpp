@@ -6,26 +6,21 @@
 
 
 using namespace std;
+
 struct Date;
 struct Expense;
 
 
-void save(int index);
+//void save(int index);
 
 bool strcomp(string s1, string s2);
 //void prepTracker();
 void mainMenu();
-void manageExpenses();
-void listExpenses();
-void promptAddExpense();
-void addExpense(string name, float price, Date date);
 bool checkDate(int day, int month, int year);
-void promptRemoveExpense();
-int locateExpense(string name);
-void removeExpense(int index);
 
-void promptEditExpense();
-void editExpense(int index, int option);
+int locateRC(string name);
+void removeExpense(int index);
+void editRC(int index, int option);
 void editName(int index);
 void editPrice(int index);
 void editDate(int index);
@@ -35,8 +30,9 @@ void listRecurringCosts();
 void promptAddRC();
 void addRC(string name, float price, Date date);
 void promptRemoveRC();
+void removeRC(int index);
 void promptEditRC();
-void editRC();
+
 void manageIS();
 // part 2
 void manageIncome();
@@ -110,110 +106,119 @@ struct IncomeSource {
     }
 };
 
-Expense expenses[5000]; int num_of_expenses = 0;
+//Expense expenses[5000]; int num_of_expenses = 0;
 Expense recurring_costs[100]; int num_of_costs = 0;
 IncomeSource incomes[5000]; int num_of_incomes = 0;
 
-/*void prepTracker() {
-    addExpense("School", 42069,Date(9,11,2003));
-    addExpense("Laptop", 4200, Date(9, 3, 3));
-    addRC("car fuel", 420, Date(9, 3, 3));
-    addRC("hosue rent", 69420, Date(9, 3, 3));
-    addRC("water", 100, Date(9, 3, 3));
-    addRC("electricity", 220, Date(9, 3, 3));
-    addRC("pet food", 200, Date(9, 3, 3));
-}*/
+//void prepTracker() {
+//    addExpense("School", 42069, Date(9, 11, 2003));
+//    addExpense("Laptop", 4200, Date(9, 3, 3));
+//    addRC("car fuel", 420, Date(9, 3, 3));
+//    addRC("hosue rent", 69420, Date(9, 3, 3));
+//    addRC("water", 100, Date(9, 3, 3));
+//    addRC("electricity", 220, Date(9, 3, 3));
+//    addRC("pet food", 200, Date(9, 3, 3));
+//}
 
-void addExpense(string name, float price, Date date) { //Addsd an expense to the expenses array
-    expenses[num_of_expenses++] = Expense(name, price, date);
-}
+//void addExpense(string name, float price, Date date) { //Addsd an expense to the expenses array
+  //  expenses[num_of_expenses++] = Expense(name, price, date);
+//}
 
 void addRC(string name, float price, Date date) { //Adds a repeating cost to the repeating_costs array
     recurring_costs[num_of_costs++] = Expense(name, price, date);
 }
 
 void mainMenu() {
-    
+
     system("cls");
     cout << "Welcome to your income tracker" << endl;
 
     while (true) {
         cout << "Select an option: " << endl <<
-            "1. Manage expenses" << endl <<
-            "2. Manage recurring costs" << endl <<
-            "3. Manage income sources" << endl <<
-            "4. View details" << endl <<
-            "5. Exit" << endl;
+            "1. Manage recurring costs" << endl <<
+            "2. Manage income sources" << endl <<
+            "3. Add Expenses "<<endl <<
+            "4. Quick Overview" << endl <<
+            "5. Full Details" << endl <<
+            "6. Exit" << endl;
     m:
         int choice;
         cin >> choice;
         switch (choice) {
+
+            break;
         case 1:
-            manageExpenses();
+            manageRC(); 
             break;
         case 2:
-            //manageRC(); 
+            manageIncome();
             break;
         case 3:
-             manageIncome(); 
-            break;
+           // AddExpense();
         case 4:
-            // details(); 
+            // QuickLook(); 
             break;
         case 5:
-            return;
+            // details();
+        case 6:
+            exit(1);
         default:
             cout << "Please enter a valid choice" << endl; goto m;
         }
     }
 }
 
-void manageExpenses() {
+void manageRC() {
+    system("cls");
+    cout << "Select an option: " << endl <<
+        "\t1.View all Recurring Cost" << endl <<
+        "\t2.Add a Recurring Cost" << endl <<
+        "\t3.Edit a Recurring Cost" << endl <<
+        "\t4.Remov a Recurring Cost" << endl <<
+        "\t5.Go Back" << endl;
+    int option;
+m:
+    cin >> option;
+    switch (option) {
+    case 1:
+        listRecurringCosts(); break;
+    case 2:
+        promptAddRC(); break;
+    case 3:
+        promptEditRC(); break;
+    case 4:
+        promptRemoveRC(); break;
+    case 5:
+        mainMenu();
+    default:
+        cout << "Please enter a valid choice\n"; goto m;
 
-        cout << "Select an option: " << endl <<
-            "\t1.View all expenses" << endl <<
-            "\t2.Edit An Expense" << endl <<
-            "\t3.Go Back" << endl;
-        int option;
-    m:
-        cin >> option;
-        switch (option) {
-        case 1:
-            listExpenses(); break;
-        case 2:
-            promptEditExpense(); break;
-        case 3:
-            mainMenu();
-        default:
-            cout << "Please enter a valid choice\n"; goto m;
+    }
 
-        }
-  
     system("CLS");
 }
 
-void listExpenses() {
+void listRecurringCosts() {
+    system("cls");
     int choice;
-    if (!num_of_expenses)
+    if (!num_of_costs)
     {
         char AE;
-        cout << "There are currently no expenses, would you like to add an expense ? (y/n)\n";
+        cout << "There are currently no Recurring Costs, would you like to add one ? (y/n)\n";
         cin >> AE;
         if (AE == 'y' || AE == 'Y')
-            promptAddExpense();
+            promptAddRC();
         else if (AE == 'N' || AE == 'n')
         {
-            manageExpenses();
+            manageRC();
         }
     }
 
-    for (int i = 0; i < num_of_expenses; i++) {
-        expenses[i].print();
+    for (int i = 0; i < num_of_costs; i++) {
+        recurring_costs[i].print();
     }
-    cout << "Select an option: "
-        << "\n1- Add Expenses\n"
-        << "2- Remove Expenses\n"
-        << "3- Go back" << endl;
+    cout << "Select an option: " << endl <<
+        "1- Go back" << endl;
 
 m:
     cin >> choice;
@@ -221,11 +226,7 @@ m:
     switch (choice)
     {
     case 1:
-        promptAddExpense(); break;
-    case 2:
-        promptRemoveExpense(); break;
-    case 3:
-        manageExpenses(); break;
+        manageRC(); break;
     default:
         cout << "Please enter a valid choice:"; goto m;
 
@@ -233,7 +234,7 @@ m:
     system("pause");
 }
 
-void promptAddExpense() {
+void promptAddRC() {
     string name; float price; char yn;
     do {
         int day;
@@ -255,7 +256,7 @@ void promptAddExpense() {
         cin >> day >> month >> year;
         if ((checkDate(day, month, year)))
         {
-            addExpense(name, price, Date(day, month, year));
+            addRC(name, price, Date(day, month, year));
         }
         else
         {
@@ -269,12 +270,12 @@ void promptAddExpense() {
     system("CLS");
 }
 
-int locateExpense(string name)
+int locateRC(string name)
 {
     int index = -1;
-    for (int i = 0; i < num_of_expenses; i++)
+    for (int i = 0; i < num_of_costs; i++)
     {
-        if (expenses[i].name == name)
+        if (recurring_costs[i].name == name)
             index = i;
     }
     return index;
@@ -282,24 +283,24 @@ int locateExpense(string name)
 
 
 
-void removeExpense(int index)
+void removeRC(int index)
 {
-    for (int i = index; i < num_of_expenses; i++)
+    for (int i = index; i < num_of_costs; i++)
     {
-        expenses[i] = expenses[i + 1];
+        recurring_costs[i] = recurring_costs[i + 1];
     }
-    expenses[--num_of_expenses] = Expense();
+    recurring_costs[--num_of_costs] = Expense();
 }
 
-void promptRemoveExpense()
+void promptRemoveRC()
 {
     string expenseName;
     cout << "Enter the name of the expense you want to remove: ";
     cin >> expenseName;
-    int index = locateExpense(expenseName);
+    int index = locateRC(expenseName);
     if (index > -1)
     {
-        removeExpense(index);
+        removeRC(index);
     }
     else
     {
@@ -307,7 +308,7 @@ void promptRemoveExpense()
     }
 }
 
-void promptEditExpense()
+void promptEditRC()
 {
     string choice;
     int option;
@@ -316,13 +317,13 @@ m:
     cin >> choice;
     if (checkIfExists(choice))
     {
-        int index = locateExpense(choice);
+        int index = locateRC(choice);
         cout << "1- Change Name\n"
             << "2- Change Value\n"
             << "3- Change Date\n"
             << "4- Change All\n";
         cin >> option;
-        editExpense(index, option);
+        editRC(index, option);
     }
     else
     {
@@ -330,7 +331,7 @@ m:
     }
 }
 
-void editExpense(int index, int option)
+void editRC(int index, int option)
 {
 
 m:
@@ -371,13 +372,13 @@ bool strcomp(string s1, string s2)
 
     return same;
 }
-bool checkIfExists(string expenseName)
+bool checkIfExists(string RCname)
 {
     bool exists = true;
-    for (int i = 0; i < num_of_expenses + 1; i++)
+    for (int i = 0; i < num_of_costs + 1; i++)
     {
 
-        if (strcomp(expenseName, expenses[i].name))
+        if (strcomp(RCname, recurring_costs[i].name))
         {
             exists = true;
             break;
@@ -409,14 +410,14 @@ void editName(int index)
     string name;
     cout << "Please enter the new name: ";
     cin >> name;
-    expenses[index].name = name;
+    recurring_costs[index].name = name;
 }
 void editPrice(int index)
 {
     float price;
     cout << "Please enter the new price: ";
     cin >> price;
-    expenses[index].price = price;
+    recurring_costs[index].price = price;
 }
 void editDate(int index)
 {
@@ -426,7 +427,7 @@ d:
     cin >> day >> month >> year;
     if (checkDate(day, month, year))
     {
-        expenses[index].date = Date(day, month, year);
+        recurring_costs[index].date = Date(day, month, year);
     }
     else
     {
@@ -434,20 +435,20 @@ d:
     }
 
 }
-void INITsave(Expense expense)
-{
-    ofstream file("Data.txt", ios::out);
-
-    file << expense.name << " " << expense.price << " " << expense.date.day << " " << expense.date.month
-        << " " << expense.date.year << endl;
-
-    file.close();
-}
-void save()
-{
-    for (int i = 0; i < num_of_expenses; i++)
-        INITsave(expenses[i]);
-}
+//void INITsave(Expense expense)
+//{
+//    ofstream file("Data.txt", ios::out);
+//
+//    file << recu.name << " " << expense.price << " " << expense.date.day << " " << expense.date.month
+//        << " " << expense.date.year << endl;
+//
+//    file.close();
+//}
+//void save()
+//{
+//    for (int i = 0; i < num_of_expenses; i++)
+//        INITsave(expenses[i]);
+//}
 // part 2 definition
 void addIncome(string name, float size, float rate)
 {
@@ -456,41 +457,41 @@ void addIncome(string name, float size, float rate)
 
 void manageIncome()
 {
-        //added on 5/6/2022
-        system("CLS");
-        //this one above the comment
-        cout << "Select an option: " << endl <<
-            "\t1. Add an income" << endl <<
-            "\t2. Remove an income" << endl <<
-            "\t3. Edit an income" << endl <<
-            "\t4.show all current incomes" << endl << endl;
-        cout << "\t5. Go back" << endl << endl;
+    //added on 5/6/2022
+    system("CLS");
+    //this one above the comment
+    cout << "Select an option: " << endl <<
+        "\t1. Add an income" << endl <<
+        "\t2. Remove an income" << endl <<
+        "\t3. Edit an income" << endl <<
+        "\t4.show all current incomes" << endl << endl;
+    cout << "\t5. Go back" << endl << endl;
 
-        int option;
-    m:
-        cin >> option;
-        switch (option)
-        {
-        case 1:
-            promptAddIncome();
-            break;
-        case 2:
-            //promptRemoveIncome();
-            break;
-        case 3:
-            promptEditIncome();
-            break;
-        case 4:
-            listIncome();
-            break;
-        case 5:
-            mainMenu();
-            break;
-        default:
-            cout << "Please enter a valid choice\n";
-            goto m;
-        }
-  
+    int option;
+m:
+    cin >> option;
+    switch (option)
+    {
+    case 1:
+        promptAddIncome();
+        break;
+    case 2:
+        promptRemoveIncome();
+        break;
+    case 3:
+        promptEditIncome();
+        break;
+    case 4:
+        listIncome();
+        break;
+    case 5:
+        mainMenu();
+        break;
+    default:
+        cout << "Please enter a valid choice\n";
+        goto m;
+    }
+
 }
 
 void listIncome()
@@ -506,59 +507,50 @@ void listIncome()
             promptAddIncome();
         else if (YN == 'n' || YN == 'N')
         {
-            return;
+            manageIncome();
         }
     }
     for (int i = 0; i < num_of_incomes; i++)
         incomes[i].print();
     cout << endl;
-    cout << "select an option"<<endl;
-    cout << "1- Go back"<<endl;
+    cout << "select an option" << endl;
+    cout << "1- Go back" << endl;
+    v:
     cin >> choice;
     if (choice)
     {
         manageIncome();
     }
+    else
+    {
+        cout << "Please Enter a valid option: ";
+        goto v;
+    }
 }
-
 
 bool checkIfIncomeExists(string itemName)
 {
-    bool income_exists = true;
-    if (locateIncome(itemName) == -1) {
-
-
-        income_exists = false;
-    }
-
-    return income_exists;
-}
-
-int locateIncome(string name)
-{
-    int index = -1;
-
-    for (int i = 0; i < num_of_incomes; i++)
+    bool exists = true;
+    for (int i = 0; i < num_of_incomes+1; i++)
     {
-        if (strcomp(incomes[i].name, name))
-        {
-            for (int i = 0; i < num_of_incomes; i++)
-            {
-                if (incomes[i].name == name)
-                    index = i; break;
-            }
 
+        if (strcompIncome(itemName, incomes[i].name))
+        {
+            exists = true;
             break;
         }
 
-
+        else
+        {
+            exists = false;
+        }
     }
-    return index;
-
+    return exists;
 }
+
 void promptAddIncome()
 {
-    
+
     string income_name;
     float  income_value;
     float  income_rate;
@@ -616,7 +608,7 @@ m:
         cout << "Please enter a valid name" << endl;    goto m;
     }
 }
-int locateincome(string name)
+int locateIncome(string name)
 {
     int index = -1;
     for (int i = 0; i < num_of_incomes; i++)
@@ -625,6 +617,30 @@ int locateincome(string name)
             index = i;
     }
     return index;
+}
+void removeIncome(int index)
+{
+    for (int i = index; i < num_of_incomes; i++)
+    {
+        incomes[i] = incomes[i + 1];
+    }
+    incomes[--num_of_incomes] = IncomeSource();
+}
+
+void promptRemoveIncome()
+{
+    string incomeName;
+    cout << "Enter the name of the income you want to remove: ";
+    cin >> incomeName;
+    int index = locateIncome(incomeName);
+    if (index > -1)
+    {
+        removeIncome(index);
+    }
+    else
+    {
+        cout << "income not found\n";
+    }
 }
 void editincome(int index, int option)
 {
@@ -703,9 +719,9 @@ int main()
 
     //fadi has worked on this project 3alashan ma7adesh y2ool 7aga 8eor kda
     // 7sl w ana 4ahd
-    //prepTracker();
+  //  prepTracker();
     mainMenu();
-    save();
+ 
 
     // expenses[0] = Expense("gas", 420);
     // cout << Wallet << endl;
